@@ -1,36 +1,53 @@
 # UTN - Programación III
-## Evaluación Parcial 2: Java Persistence API (JPA)
+## Trabajo Práctico Integrador (TPI): Food Store
+### Sistema de Gestión de Pedidos
 
 ### Datos del Alumno
 * **Alumna:** Giardini Silvia
 * **Comisión:** 07
 * **Materia:** Programación III
 * **Carrera:** Tecnicatura Universitaria en Programación a Distancia
-* **Link al video de YouTube:** https://youtu.be/vi78eNGTAU0
+* **Link al video de YouTube:** 
 
 ### Descripción del Proyecto
-Este proyecto consiste en una extensión de la aplicación de gestión de pedidos desarrollada sobre un entorno automatizado con Gradle.
-El objetivo principal es implementar una arquitectura de persistencia robusta utilizando **JPA (Java Persistence API)**  a través de repositorios genéricos y específicos.
-Esto permite la administración completa del ciclo de vida de las entidades `Categoria` y `Producto` mediante operaciones ABM y consultas personalizadas optimizadas en JPQL.
 
-El sistema cuenta con validaciones de negocio (control de precios mayores a cero y stocks no negativos) junto a un mecanismo de **baja lógica**,
-resguardando la integridad histórica y referencial de los datos.
+### 📝 Descripción del Proyecto
+
+Este proyecto constituye la capa de backend y persistencia del Sistema de Gestión de Pedidos Food Store.
+Desarrollado en Java 21 bajo el entorno de Gradle, utiliza JPA (Java Persistence API) junto con Hibernate y una base de datos relacional H2 en modo archivo local.
+
+El objetivo principal es implementar una arquitectura de datos robusta a través de repositorios genéricos y específicos para la administración completa del ciclo de vida de las entidades
+(Categoria, Producto, Usuario y Pedido). La interacción con el sistema se realiza mediante un menú interactivo por consola que ejecuta la lógica de negocio,
+valida las reglas comerciales y controla los procesos transaccionales del establecimiento.
 
 ---
 
 ### 📂 Estructura del Proyecto
 Los componentes nuevos y modificados se organizan bajo la siguiente estructura de paquetes dentro del directorio raíz `src/main/java/`:
 
-* `com.gestion.pedidos/`
-    * `model/entities/` -> Entidades de negocio autogestionadas por JPA (`Base`, `Categoria`, `Producto`, `Pedido`, `DetallePedido`, `Usuario`).
-    * `model/enums/` -> Enumeradores de control de estado (`Estado`, `FormaPago`, `Rol`).
-    * `model/interfaces/` -> Interfaces de comportamiento del modelo (`Calculable`).
-    * `repository/` -> Capa de acceso a datos y abstracción de persistencia.
-        * `BaseRepository.java` -> Clase abstracta genérica con operaciones CRUD seguras y manejo transaccional.
-        * `CategoriaRepository.java` -> Repositorio específico para la entidad Categoría.
-        * `ProductoRepository.java` -> Repositorio específico para Producto con consultas JPQL tipadas y parámetros nombrados.
-    * `util/` -> Contiene `JPAUtil.java` para la gestión centralizada del ciclo de vida del `EntityManagerFactory`.
-    * `Main.java` -> Clase principal con el flujo de control, menús interactivos y el módulo de reportes.
+* `com.tp.jpa/`
+    * `model/entities/` -> Entidades de dominio gestionadas por JPA.
+        * `Base.java` -> Superclase anotada con `@MappedSuperclass` para las herencias.
+        * `Categoria.java` -> Entidad para la clasificación del catálogo.
+        * `Producto.java` -> Entidad con atributos de precio, stock y disponibilidad.
+        * `Usuario.java` -> Entidad de clientes y administradores con validación de mail único.
+        * `Pedido.java` -> Clase que implementa `Calculable` para orquestar la suma de costes.
+        * `DetallePedido.java` -> Línea de compra unidireccional dependiente del pedido.
+    * `model/enums/` -> Enumeradores de control tipado.
+        * `Rol.java` -> Roles de acceso integrados (`ADMIN`, `USUARIO`).
+        * `Estado.java` -> Ciclo de vida del pedido (`PENDIENTE`, `CONFIRMADO`, `TERMINADO`, `CANCELADO`).
+        * `FormaPago.java` -> `TARJETA`, `TRANSFERENCIA`, `EFECTIVO`.
+    * `model/interfaces/` -> Contratos funcionales.
+        * `Calculable.java` -> Interfaz para el cálculo de totales sobre colecciones.
+    * `repository/` 
+        * `BaseRepository.java` -> Operaciones ABM genéricas y comunes para todas las entidades.
+        * `CategoriaRepository.java` -> Búsqueda de productos activos por categoría usando JOIN
+        * `ProductoRepository.java` -> Gestión y almacenamiento del catálogo de productos.
+        * `UsuarioRepository.java` -> Validación de mails únicos y consulta de sus pedidos asociados.
+        * `PedidoRepository.java` -> Filtrado y consulta de pedidos según su estado.
+    * `util/` -> Herramientas compartidas.
+        * `JPAUtil.java` -> Gestión centralizada de las conexiones (EntityManagerFactory).
+    * `Main.java` -> Entrada del programa. Coordina la inicialización de repositorios y renderiza las pantallas de la consola.
 
 ---
 
@@ -38,8 +55,8 @@ Los componentes nuevos y modificados se organizan bajo la siguiente estructura d
 
 #### Requisitos Previos
 * Java Development Kit (JDK) 21 instalado y configurado.
-* Entorno de Desarrollo Integrado (IDE) como *IntelliJ IDEA* o *Eclipse*.
-
+* **IDE:** Compatible con Gradle, de preferencia *IntelliJ IDEA* o *Eclipse*.
+* 
 #### Pasos para ejecutar la aplicación desde el IDE:
 
 1. **Importar el proyecto:** Luego de descomprimir el archivo del proyecto, abra su IDE y seleccione la opción de abrir o importar un proyecto existente.
