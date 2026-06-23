@@ -129,8 +129,8 @@ public class Main {
 
                             case 3:
                                 System.out.println("\n--- MODIFICAR CATEGORÍA ---");
-                                List<Categoria> categoriasActivas = categoriaRepo.listarActivos();
                                 System.out.println("Categorías disponibles: ");
+                                List<Categoria> categoriasActivas = categoriaRepo.listarActivos();
                                 for (Categoria cat : categoriasActivas) {
                                     System.out.println("- ID: " + cat.getId() + " - Nombre: " + cat.getNombre());
                                 }
@@ -283,6 +283,7 @@ public class Main {
                                         .precio(precioProd)
                                         .stock(stockProd)
                                         .categoria(categoriaSeleccionada)
+                                        .disponible(true)
                                         .build();
 
                                 productoRepo.guardar(nuevoProd);
@@ -314,8 +315,9 @@ public class Main {
                                 break;
                             case 3:
                                 System.out.println("\n--- MODIFICAR PRODUCTO ---");
-                                List<Producto> productosActivos = productoRepo.listarActivos();
                                 System.out.println("Productos disponibles: ");
+                                List<Producto> productosActivos = productoRepo.listarActivos();
+
                                 for (Producto prod : productosActivos) {
                                     System.out.println("- ID: " + prod.getId() + " - Nombre: " + prod.getNombre());
                                 }
@@ -430,7 +432,7 @@ public class Main {
                         switch (opcionUsuario) {
                             case 1:
                                 System.out.println("\n--- Para dar de alta un usuario ingrese: ---");
-                                System.out.print("- Mail (único): ");
+                                System.out.print("- Mail: ");
                                 String emailUsu = scanner.nextLine().trim();
 
                                 if (emailUsu.isEmpty()) {
@@ -502,12 +504,13 @@ public class Main {
 
                             case 3:
                                 System.out.println("\n--- MODIFICAR USUARIO ---");
+                                System.out.println("Usuarios disponibles: ");
+
                                 List<Usuario> usuariosActivos = usuarioRepo.listarActivos();
                                 if (usuariosActivos.isEmpty()) {
                                     System.out.println("No hay usuarios activos para modificar.");
                                     break;
                                 }
-                                System.out.println("Usuarios disponibles: ");
                                 for (Usuario usuario : usuariosActivos) {
                                     System.out.println("- ID: " + usuario.getId() + " - Nombre: " + usuario.getNombre());
                                 }
@@ -714,7 +717,11 @@ public class Main {
                                     System.out.println("\nCatálogo de Productos Disponibles:");
                                     for (Producto p : productosActivosPed) {
                                         if (p.isDisponible()) {
-                                            System.out.println("- ID: " + p.getId() + " | " + p.getNombre() + " | Precio: $" + p.getPrecio() + " | Stock: " + p.getStock());
+                                            System.out.println("- ID: " + p.getId() +
+                                                    " | " + p.getNombre() +
+                                                    " | Categoría: " + p.getCategoria().getNombre() +
+                                                    " | Precio: $" + p.getPrecio() +
+                                                    " | Stock: " + p.getStock());
                                         }
                                     }
 
@@ -833,13 +840,30 @@ public class Main {
 
                             case 2:
                                 System.out.println("\n--- CAMBIAR ESTADO DE UN PEDIDO ---");
-                                System.out.print("Ingrese el ID del pedido a modificar: ");
+                                System.out.println("Pedidos disponibles en el sistema:");
+
+                                List<Pedido> pedidosDisponibles = pedidoRepo.listarActivos();
+                                if (pedidosDisponibles.isEmpty()) {
+                                    System.out.println("No se registran pedidos activos en el sistema para poder modificar.");
+                                    break;
+                                }
+
+                                for (Pedido p : pedidosDisponibles) {
+                                    String clienteNombre = usuarioRepo.buscarPorPedidoId(p.getId())
+                                            .map(u -> u.getNombre() + " " + u.getApellido())
+                                            .orElse("Desconocido");
+
+                                    System.out.println("- ID: " + p.getId() + " | Fecha: " + p.getFecha() + " | Cliente: " + clienteNombre + " | Estado Actual: " + p.getEstado() + " | Total: $" + p.getTotal());
+                                }
+
+                                System.out.print("\nIngrese el ID del pedido a modificar: ");
                                 try {
                                     Long idPedEstado = Long.parseLong(scanner.nextLine());
                                     Optional<Pedido> pedSelec = pedidoRepo.buscarPorId(idPedEstado);
                                     if (pedSelec.isPresent() && !pedSelec.get().isEliminado()) {
                                         Pedido pedido = pedSelec.get();
-                                        System.out.println("Estado actual: " + pedido.getEstado());
+
+                                        System.out.println("\nPedido seleccionado ID: " + pedido.getId() + " (Estado actual: " + pedido.getEstado() + ")");
                                         System.out.println("Seleccione el nuevo estado:");
                                         System.out.println("1) PENDIENTE\n2) CONFIRMADO\n3) TERMINADO\n4) CANCELADO");
                                         System.out.print("Opción: ");
@@ -853,7 +877,7 @@ public class Main {
                                             break;
                                         }
                                         pedidoRepo.guardar(pedido);
-                                        System.out.println("Pedido modificado con éxito! Pedido ID " + pedido.getId() + " actualizado a " + pedido.getEstado());
+                                        System.out.println("¡Pedido modificado con éxito! Pedido ID " + pedido.getId() + " actualizado a " + pedido.getEstado());
                                     } else {
                                         System.out.println("Error: No se encontró ningún pedido activo con el ID indicado.");
                                     }
@@ -861,7 +885,7 @@ public class Main {
                                     System.out.println("Error: Debe ingresar un valor numérico válido.");
                                 }
                                 break;
-
+//
                             case 3:
                                 System.out.println("\n--- BAJA LÓGICA DE UN PEDIDO ---");
                                 System.out.print("Ingrese el ID del pedido a dar de baja: ");
@@ -882,19 +906,16 @@ public class Main {
 
                             case 4:
                                 System.out.println("\n--- LISTAR PEDIDOS ACTIVOS ---");
+                                System.out.println("- Listado de todos los pedidos activos -");
                                 List<Pedido> pedidosActivosLista = pedidoRepo.listarActivos();
                                 if (pedidosActivosLista.isEmpty()) {
                                     System.out.println("No se registran pedidos activos en el sistema.");
                                 } else {
                                     for (Pedido p : pedidosActivosLista) {
+                                        String clienteNombre = usuarioRepo.buscarPorPedidoId(p.getId())
+                                                .map(u -> u.getNombre() + " " + u.getApellido())
+                                                .orElse("Desconocido");
 
-                                        String clienteNombre = "Desconocido";
-                                        for (Usuario u : usuarioRepo.listarActivos()) {
-                                            if (u.getPedidos().contains(p)) {
-                                                clienteNombre = u.getNombre() + " " + u.getApellido();
-                                                break;
-                                            }
-                                        }
                                         System.out.println("ID: " + p.getId() + " | Fecha: " + p.getFecha() + " | Estado: " + p.getEstado() + " | Pago: " + p.getFormaPago() + " | Cliente: " + clienteNombre + " | Total: $" + p.getTotal());
                                     }
                                 }
@@ -994,12 +1015,13 @@ public class Main {
                         switch (opcionReportes) {
                             case 1:
                                 System.out.println("\n- Listar productos por categoria -");
+                                System.out.println("Categorías disponibles:");
                                 List<Categoria> listaCategoriasReporte = categoriaRepo.listarActivos();
                                 if (listaCategoriasReporte.isEmpty()) {
                                     System.out.println("No hay categorías activas en el sistema.");
                                     break;
                                 }
-                                System.out.println("Categorías disponibles:");
+
                                 for (Categoria cat : listaCategoriasReporte) {
                                     System.out.println("- ID: " + cat.getId() + " - Nombre: " + cat.getNombre());
                                 }
@@ -1032,12 +1054,12 @@ public class Main {
 
                             case 2: //ver pedidos por usuarios
                                 System.out.println("\n- Listar pedidos por usuario -");
+                                System.out.println("Usuarios disponibles:");
                                 List<Usuario> usuariosActivos = usuarioRepo.listarActivos();
                                 if (usuariosActivos.isEmpty()) {
                                     System.out.println("No hay usuarios activos registrados en el sistema.");
                                     break;
                                 }
-                                System.out.println("Usuarios disponibles:");
                                 for (Usuario u : usuariosActivos) {
                                     System.out.println("- ID: " + u.getId() + " - Nombre: " + u.getNombre() + " " + u.getApellido());
                                 }
