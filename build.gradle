@@ -4,7 +4,7 @@ plugins {
 }
 
 application {
-    mainClass = 'com.gestion.pedidos.Main'
+    mainClass = 'com.tp.jpa.Main'
 }
 
 group = "org.example"
