@@ -14,7 +14,7 @@ public class PedidoRepository extends BaseRepository<Pedido> {
     public List<Pedido> buscarPorEstado(Estado estado) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            /*Consulta JPQL: retorna todos los pedidos activos con un estado específico Útil para filtrar PENDIENTE, CONFIRMADO, TERMINADO o CANCELADO*/
+            /*Consulta JPQL: retorna todos los pedidos activos con un estado específico para filtrar PENDIENTE, CONFIRMADO, TERMINADO o CANCELADO*/
             String jpql = "SELECT p FROM Pedido p WHERE p.estado = :estado AND p.eliminado = false";
             List<Pedido> consulta = em.createQuery(jpql, Pedido.class)
                     .setParameter("estado", estado)

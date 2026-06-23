@@ -14,9 +14,8 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
         super(Usuario.class);
     }
 
-/*    Consulta JPQL: busca un usuario activo por su dirección de correo electrónico
+    /* Consulta JPQL: busca un usuario activo por su dirección de correo electrónico
    Retorna Optional para manejar el caso en que el mail no esté registrado*/
-
 
     public Optional<Usuario> buscarPorMail(String mail) {
         EntityManager em = JPAUtil.getEntityManager();
@@ -30,9 +29,7 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
             em.close();
         }
     }
-
-
- /*    Consulta JPQL: retorna los pedidos activos de un usuario. Como la relación es unidireccional y Usuario es el dueño, se navega
+ /* Consulta JPQL: retorna los pedidos activos de un usuario. Como la relación es unidireccional y Usuario es el dueño, se navega
  desde Usuario hacia su colección u.pedidos mediante JOIN. Se filtra por el id del usuario (:uid) y por p.eliminado = false
  para excluir las bajas lógicas.*/
     public List<Pedido> buscarPedidosPorUsuario(Long idUsuario) {
@@ -47,5 +44,4 @@ public class UsuarioRepository extends BaseRepository<Usuario> {
             em.close();
         }
     }
-
 }

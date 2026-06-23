@@ -17,6 +17,7 @@ public class CategoriaRepository extends BaseRepository<Categoria> {
     /* Consulta JPQL: retorna los productos activos de una categoría. Como la relación es unidireccional y Categoria es la dueña,
      se navega desde Categoria hacia su colección c.productos mediante JOIN. Se filtra por el id de la categoría (parámetro nombrado :catId)
      y por p.eliminado = false para excluir las bajas lógicas.*/
+
     public List<Producto> buscarProductosPorCategoria(Long categoriaId) {
         EntityManager em = JPAUtil.getEntityManager();
         try {

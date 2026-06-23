@@ -31,7 +31,8 @@ public class Pedido extends Base implements Calculable {
 
     // Los detalles del pedido en un Set para que no se repitan
     @Builder.Default
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_pedido")
     private Set<DetallePedido> detalles = new HashSet<>();
 
     // Método agregar productos al pedido
