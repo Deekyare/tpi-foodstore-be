@@ -3,6 +3,7 @@ package com.tp.jpa.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 import java.util.Objects;
 
 @Getter
@@ -44,6 +45,7 @@ public class DetallePedido extends Base {
             this.subtotal = 0.0;
         }
     }
+
     @Override
     public boolean equals(Object o) {
         // Si ambos objetos apuntan a la misma dirección de memoria, son el mismo.
@@ -55,15 +57,14 @@ public class DetallePedido extends Base {
 
         // Se lo tratamos como DetallePedido para poder analizarlo.
         DetallePedido este = (DetallePedido) o;
-        // Decimos que dos detalles son iguales si contienen el mismo Producto.
+        // Decimos que dos detalles son iguales si contienen el mismo Producto y datos.
         // Esto evita que en el pedido aparezcan dos líneas con la misma hamburguesa.
         return Objects.equals(producto, este.producto);
     }
+
     @Override
     public int hashCode() {
         // Si dos detalles tienen el mismo producto, irán al mismo "lugar" del Set.
         return Objects.hash(producto);
     }
-
-
 }

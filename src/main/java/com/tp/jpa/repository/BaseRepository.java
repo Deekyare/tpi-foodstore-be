@@ -27,19 +27,24 @@ public abstract class BaseRepository<T extends Base> {
 
         try {
             tx.begin();
-            // La consigna pide usar merge()
-            entity = em.merge(entity);
+            // Si el id es null, es un alta, se usa persist
+            if (entity.getId() == null) {
+                em.persist(entity);
+            } else {
+                // Si ya tiene id, es una actulización. Se usa merge
+                entity = em.merge(entity);
+            }
+
             tx.commit();
-            return entity;
+            return entity; // Retorna la entidad gestionada (con su ID asignado)
         } catch (Exception e) {
             if (tx.isActive()) {
-                tx.rollback();
+                tx.rollback(); // Hace rollback ante cualquier excepción
                 System.out.println("Transacción revertida por error en guardar.");
             }
             e.printStackTrace();
             return null;
         } finally {
-            // Cierra el EntityManager en el bloque finally
             em.close();
         }
     }
@@ -49,10 +54,14 @@ public abstract class BaseRepository<T extends Base> {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             T entity = em.find(entityClass, id);
-            // Retorna un Optional. Si entity es null, devuelve Optional.empty()
-            return Optional.ofNullable(entity);
+            // Si existe retorna Optional.of, si no retorna Optional.empty()
+            if (entity != null) {
+                return Optional.of(entity);
+            } else {
+                return Optional.empty();
+            }
         } finally {
-            em.close();
+            em.close(); //
         }
     }
 

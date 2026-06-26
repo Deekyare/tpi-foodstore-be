@@ -52,6 +52,7 @@ public class Main {
             }
             if (seleccion == 0) {
                 System.out.println("Saliendo del programa.");
+                JPAUtil.close();
                 break;
             }
             switch (seleccion) {
@@ -885,7 +886,7 @@ public class Main {
                                     System.out.println("Error: Debe ingresar un valor numérico válido.");
                                 }
                                 break;
-//
+
                             case 3:
                                 System.out.println("\n--- BAJA LÓGICA DE UN PEDIDO ---");
                                 System.out.print("Ingrese el ID del pedido a dar de baja: ");
@@ -970,13 +971,11 @@ public class Main {
                                 } else {
                                     System.out.println("\nPedidos activos en estado " + estadoFiltro + ":");
                                     for (Pedido p : pedidosPorEstado) {
-                                        String clienteNombre = "Desconocido";
-                                        for (Usuario u : usuarioRepo.listarActivos()) {
-                                            if (u.getPedidos().contains(p)) {
-                                                clienteNombre = u.getNombre() + " " + u.getApellido();
-                                                break;
-                                            }
-                                        }
+
+                                        String clienteNombre = usuarioRepo.buscarPorPedidoId(p.getId())
+                                                .map(u -> u.getNombre() + " " + u.getApellido())
+                                                .orElse("Desconocido");
+
                                         System.out.println("- ID: " + p.getId() + " | Fecha: " + p.getFecha() + " | Cliente: " + clienteNombre + " | Total: $" + p.getTotal());
                                     }
                                 }
@@ -1084,7 +1083,8 @@ public class Main {
                                     System.out.println("\nError: Debe ingresar un ID numérico válido.");
                                 }
                                 break;
-                            case 3: // Pedidos por estado
+                            // Pedidos por estado
+                            case 3:
                                 System.out.println("\n- Listar pedidos por estado -");
                                 System.out.println("Seleccione el estado para filtrar:");
                                 System.out.println("1) PENDIENTE\n2) CONFIRMADO\n3) TERMINADO\n4) CANCELADO");
@@ -1110,8 +1110,8 @@ public class Main {
                                     }
                                 }
                                 break;
-
-                            case 4: // Total Facturado con estado "TERMINADO"
+                            // Total Facturado con estado "TERMINADO"
+                            case 4:
                                 System.out.println("\n- Total Facturado para pedidos terminados -");
                                 List<Pedido> pedidosTerminados = pedidoRepo.buscarPorEstado(Estado.TERMINADO);
                                 double totalFacturado = 0.0;

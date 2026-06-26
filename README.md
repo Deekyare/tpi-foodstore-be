@@ -7,7 +7,7 @@
 * **Comisión:** 07
 * **Materia:** Programación III
 * **Carrera:** Tecnicatura Universitaria en Programación a Distancia
-* **Link al video de YouTube:** 
+* **Link al video de YouTube:** https://youtu.be/xTfKCXWCAKM 
 
 ### Descripción del Proyecto
 
@@ -62,6 +62,6 @@ Los componentes nuevos y modificados se organizan bajo la siguiente estructura d
 1. **Importar el proyecto:** Luego de descomprimir el archivo del proyecto, abra su IDE y seleccione la opción de abrir o importar un proyecto existente.
     * Seleccione la carpeta raíz (donde se encuentra el archivo `build.gradle`) para que el entorno lo reconozca y configure automáticamente como un proyecto Gradle válido.
 2. **Sincronizar dependencias:** Permita que el IDE finalice la carga, indexación y sincronización inicial de Gradle. Este proceso descargará de forma automática todas las dependencias necesarias.
-3. **Ejecutar la aplicación:** * Navegue en el árbol de directorios del IDE hasta la ruta `src/main/java/com/gestion/pedidos/Main.java`.
+3. **Ejecutar la aplicación:** * Navegue en el árbol de directorios del IDE hasta la ruta `src/main/java/com/tp/jpa/Main.java`.
     * Abra el archivo y ejecute la clase utilizando el **ícono de ejecución nativo (Run)** ubicado en el margen izquierdo de la declaración del método principal, o haga clic derecho sobre el archivo y seleccione la opción **Run 'Main.main()'**.
     * El menú interactivo se desplegará en la consola integrada del IDE.
